@@ -3,6 +3,9 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -54,9 +57,10 @@ public class UserDaoHibernateImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> users;
         try (Session session = Util.getSessionFactory().openSession()) {
-            session.beginTransaction();
-            users = session.createQuery("FROM User").list();
-            session.getTransaction().commit();
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+            criteriaQuery.from(User.class);
+            users = session.createQuery(criteriaQuery).getResultList();
         }
         return users;
     }
