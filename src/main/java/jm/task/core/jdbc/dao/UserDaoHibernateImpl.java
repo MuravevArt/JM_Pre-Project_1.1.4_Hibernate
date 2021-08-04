@@ -46,7 +46,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void removeUserById(long id) {
         try (Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
-            session.remove(session.get(User.class, id));
+            session.delete(session.get(User.class, id));
             session.getTransaction().commit();
         } catch (IllegalArgumentException e) {
             System.err.println("\nUser с таким id не найден в базе.\n" + e.getMessage());
@@ -57,10 +57,12 @@ public class UserDaoHibernateImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> users;
         try (Session session = Util.getSessionFactory().openSession()) {
+            session.beginTransaction();
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
             criteriaQuery.from(User.class);
             users = session.createQuery(criteriaQuery).getResultList();
+            session.getTransaction().commit();
         }
         return users;
     }
