@@ -46,5 +46,4 @@ public class Util {
         }
         return sessionFactory;
     }
-
 }
